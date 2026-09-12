@@ -1,0 +1,270 @@
+:root {
+  font-family: Arial, sans-serif;
+  color: #222;
+  background: #f6f7f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  width: min(1000px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.hero {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.hero p {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.picker {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+}
+
+.resultBox {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  padding: 24px;
+  border-radius: 8px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  text-align: center;
+}
+
+.resultBox.shuffling {
+  animation: pop 0.18s ease-in-out infinite alternate;
+}
+
+.resultBox span {
+  color: #92400e;
+  font-weight: 700;
+}
+
+.resultBox strong {
+  margin: 10px 0;
+  font-size: 64px;
+  line-height: 1.1;
+}
+
+.resultBox small {
+  color: #666;
+  font-weight: 700;
+}
+
+.categoryTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.categoryTabs button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: #e5e7eb;
+  color: #555;
+  font-weight: 700;
+}
+
+.categoryTabs button.active {
+  background: #2563eb;
+  color: white;
+}
+
+.pickButton {
+  min-height: 50px;
+  border: 0;
+  border-radius: 6px;
+  background: #ef4444;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.menuForm,
+.menuList {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+}
+
+.menuForm {
+  display: grid;
+  gap: 14px;
+  align-self: start;
+}
+
+.menuForm h2,
+.menuList h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.menuForm label {
+  display: grid;
+  gap: 8px;
+  color: #444;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.menuForm input,
+.menuForm select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.menuForm button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 6px;
+  background: #16a34a;
+  color: white;
+  font-weight: 700;
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.listHeader span {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.menuList ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 12px;
+  border: 1px solid #edf0f3;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.menuList li div {
+  display: grid;
+  gap: 4px;
+}
+
+.menuList li span {
+  color: #777;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.menuList li button {
+  min-width: 56px;
+  min-height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.empty {
+  margin: 28px 0 6px;
+  color: #777;
+  text-align: center;
+}
+
+@keyframes pop {
+  from {
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    transform: translateY(-3px) scale(1.01);
+  }
+}
+
+@media (max-width: 760px) {
+  .app {
+    width: min(100% - 24px, 1000px);
+    padding: 28px 0;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultBox strong {
+    font-size: 44px;
+  }
+}
