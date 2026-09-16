@@ -18,6 +18,7 @@ function App() {
   const [isPicking, setIsPicking] = useState(false);
   const [message, setMessage] = useState("오늘 점심 후보를 골라볼까요?");
 
+  // 카테고리 선택에 따라 메뉴 리스트 조회 
   const filteredMenus = useMemo(() => {
     if (selectedCategory === "전체") {
       return menus;
@@ -26,6 +27,7 @@ function App() {
     return menus.filter((menu) => menu.category === selectedCategory);
   }, [menus, selectedCategory]);
 
+  // 
   const availableMenus = useMemo(() => {
     const notRecentMenus = filteredMenus.filter(
       (menu) => !recentMenuIds.includes(menu.id)
@@ -56,7 +58,7 @@ function App() {
   };
 
   const addMenu = (newMenu: Menu) => {
-    setMenus((prevMenus) => [newMenu, ...prevMenus]);
+    setMenus((prevMenus) => [...prevMenus, newMenu]);
   };
 
   const deleteMenu = (id: number) => {
