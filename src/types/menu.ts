@@ -1,9 +1,9 @@
 export type Category =
   | "전체"
   | "한식"
-  | "중식"
   | "일식"
   | "양식"
+  | "중식"
   | "분식"
   | "기타";
 
@@ -18,9 +18,9 @@ export type Menu = {
 export const categories: Category[] = [
   "전체",
   "한식",
-  "중식",
   "일식",
   "양식",
+  "중식",
   "분식",
   "기타",
 ];
