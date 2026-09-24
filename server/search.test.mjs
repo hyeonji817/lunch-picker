@@ -33,13 +33,15 @@ test('uses Naver authentication and maps results', async () => {
     },
   });
   assert.equal(result.status, 200);
-  assert.equal(requestUrl.origin, 'https://openapi.naver.com');
+  assert.equal(requestUrl.origin, 'https://naverapihub.apigw.ntruss.com');
+  assert.equal(requestUrl.pathname, '/search/v1/local');
+  assert.equal(requestUrl.searchParams.get('format'), 'json');
   assert.equal(requestUrl.searchParams.get('query'), '강남역 돈까스');
   assert.equal(requestUrl.searchParams.get('display'), '5');
   assert.equal(requestUrl.searchParams.get('start'), '1');
   assert.equal(requestUrl.searchParams.get('sort'), 'random');
-  assert.equal(requestOptions.headers['X-Naver-Client-Secret'], 'test-secret');
-  assert.equal(requestOptions.headers['X-Naver-Client-Id'], 'test-id');
+  assert.equal(requestOptions.headers['X-NCP-APIGW-API-KEY'], 'test-secret');
+  assert.equal(requestOptions.headers['X-NCP-APIGW-API-KEY-ID'], 'test-id');
   assert.ok(requestOptions.signal);
   assert.equal(result.body.places[0].name, '돈까스 식당');
   assert.equal(result.body.places[0].address, '서울 강남대로');
@@ -67,3 +69,4 @@ test('timeout returns 504', async () => {
   const fetcher = async () => { throw new DOMException('timeout', 'TimeoutError'); };
   assert.equal((await searchRestaurants(params(), { ...credentials, fetcher })).status, 504);
 });
+

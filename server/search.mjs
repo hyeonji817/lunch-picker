@@ -8,15 +8,15 @@ export async function searchRestaurants(params, { clientId, clientSecret, fetche
     return { status: 503, body: { error: '서버의 .env에 NAVER_CLIENT_ID와 NAVER_CLIENT_SECRET을 설정해주세요.' } };
   }
   const query = `${area} ${menu}`;
-  const searchParams = new URLSearchParams({ query, display: '5', start: '1', sort: 'random' });
+  const searchParams = new URLSearchParams({ query, display: '5', start: '1', sort: 'random', format: 'json' });
   try {
-    const response = await fetcher(`https://openapi.naver.com/v1/search/local.json?${searchParams}`, {
-      headers: { 'X-Naver-Client-Id': clientId, 'X-Naver-Client-Secret': clientSecret },
+    const response = await fetcher(`https://naverapihub.apigw.ntruss.com/search/v1/local?${searchParams}`, {
+      headers: { 'X-NCP-APIGW-API-KEY-ID': clientId, 'X-NCP-APIGW-API-KEY': clientSecret },
       signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) {
       return { status: response.status === 429 ? 429 : 502, body: { error: response.status === 429
-        ? '검색 호출 한도에 도달했습니다. 잠시 후 다시 시도해주세요.'
+        ? '검색 요청이 너무 많거나 이용 한도에 도달했습니다. 잠시 후 다시 시도하거나 콘솔의 한도를 확인해주세요.'
         : '네이버 검색에 실패했습니다. 서버 인증 정보와 검색 API 설정을 확인해주세요.' } };
     }
     const data = await response.json();
@@ -37,3 +37,4 @@ export async function searchRestaurants(params, { clientId, clientSecret, fetche
       : '검색 서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.' } };
   }
 }
+
