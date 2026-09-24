@@ -1,4 +1,5 @@
 import "./App.css";
+import RestaurantSearch from "./components/RestaurantSearch";
 
 import Hero from "./components/Hero";
 import RandomResult from "./components/RandomResult";
@@ -48,6 +49,7 @@ function App() {
 
         <MenuList menus={filteredMenus} onDeleteMenu={deleteMenu} />
       </section>
+      <RestaurantSearch />
     </main>
   );
 }
