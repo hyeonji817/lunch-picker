@@ -1,28 +1,54 @@
-import { categories, type Category } from "../types/menu";
+import type { CategoryFilter } from "../hooks/useMenuPicker";
 
-type CategoryTabsProps = {
-  selectedCategory: Category;
-  onSelectCategory: (category: Category) => void;
-};
+const CATEGORIES: CategoryFilter[] = ["전체", "한식", "중식", "일식", "양식", "분식", "건강식", "기타"];
 
-function CategoryTabs({
-  selectedCategory,
-  onSelectCategory,
-}: CategoryTabsProps) {
-  return (
-    <div className="categoryTabs">
-      {categories.map((category) => (
-        <button
-          key={category}
-          type="button"
-          className={selectedCategory === category ? "active" : ""}
-          onClick={() => onSelectCategory(category)}
-        >
-          {category}
-        </button>
-      ))}
-    </div>
-  );
+interface Props {
+  selected: CategoryFilter;
+  onSelect: (c: CategoryFilter) => void;
+  excludeSpicy: boolean;
+  onToggleSpicy: () => void;
+  lightOnly: boolean;
+  onToggleLight: () => void;
 }
 
-export default CategoryTabs;
+export default function CategoryTabs({
+  selected,
+  onSelect,
+  excludeSpicy,
+  onToggleSpicy,
+  lightOnly,
+  onToggleLight,
+}: Props) {
+  return (
+    <>
+      <div className="filters">
+        {CATEGORIES.map((c) => (
+          <button
+            key={c}
+            type="button"
+            className={`chip${c === selected ? " active" : ""}`}
+            onClick={() => onSelect(c)}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+      <div className="filters filters--mood">
+        <button
+          type="button"
+          className={`chip${excludeSpicy ? " active" : ""}`}
+          onClick={onToggleSpicy}
+        >
+          🌶️ 매운맛 제외
+        </button>
+        <button
+          type="button"
+          className={`chip${lightOnly ? " active" : ""}`}
+          onClick={onToggleLight}
+        >
+          🥗 가벼운 메뉴만
+        </button>
+      </div>
+    </>
+  );
+}

@@ -1,78 +1,64 @@
-import { useMemo, useState } from "react";
-import { initialMenus } from "../data/initialMenus";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { Category, Menu } from "../types/menu";
 
-export function useMenuPicker() {
-  const [menus, setMenus] = useState<Menu[]>(initialMenus);
-  const [selectedCategory, setSelectedCategory] = useState<Category>("전체");
-  const [pickedMenu, setPickedMenu] = useState<Menu | null>(null);
-  const [recentMenuIds, setRecentMenuIds] = useState<number[]>([]);
-  const [isPicking, setIsPicking] = useState(false);
-  const [message, setMessage] = useState("오늘 점심 후보를 골라볼까요?");
+const SPIN_TICKS = 14;
+const SPIN_INTERVAL_MS = 80;
 
-  // 선택한 카테고리에 해당하는 메뉴
-  const filteredMenus = useMemo(() => {
-    if (selectedCategory === "전체") {
-      return menus;
-    }
+export type CategoryFilter = Category | "전체";
 
-    return menus.filter((menu) => menu.category === selectedCategory);
-  }, [menus, selectedCategory]);
+export function useMenuPicker(menus: Menu[]) {
+  const [category, setCategory] = useState<CategoryFilter>("전체");
+  const [excludeSpicy, setExcludeSpicy] = useState(false);
+  const [lightOnly, setLightOnly] = useState(false);
+  const [current, setCurrent] = useState<Menu | null>(null);
+  const [spinning, setSpinning] = useState(false);
+  const timerRef = useRef<number | null>(null);
 
-  // 최근 추천 메뉴를 제외하되, 후보가 없으면 전체 후보 사용
-  const availableMenus = useMemo(() => {
-    const notRecentMenus = filteredMenus.filter(
-      (menu) => !recentMenuIds.includes(menu.id)
-    );
+  const pool = useMemo(
+    () =>
+      menus.filter(
+        (m) =>
+          (category === "전체" || m.category === category) &&
+          (!excludeSpicy || !m.spicy) &&
+          (!lightOnly || m.light)
+      ),
+    [menus, category, excludeSpicy, lightOnly]
+  );
 
-    return notRecentMenus.length > 0 ? notRecentMenus : filteredMenus;
-  }, [filteredMenus, recentMenuIds]);
-
-  const pickRandomMenu = () => {
-    if (filteredMenus.length === 0) {
-      setPickedMenu(null);
-      setMessage("먼저 메뉴를 등록해주세요.");
+  const roll = useCallback(() => {
+    if (pool.length === 0) {
+      setCurrent(null);
       return;
     }
+    if (timerRef.current) window.clearInterval(timerRef.current);
 
-    setIsPicking(true);
-    setMessage("고민 중...");
+    setSpinning(true);
+    let ticks = 0;
+    timerRef.current = window.setInterval(() => {
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      setCurrent(pick);
+      ticks += 1;
+      if (ticks >= SPIN_TICKS) {
+        if (timerRef.current) window.clearInterval(timerRef.current);
+        setSpinning(false);
+        setCurrent(pool[Math.floor(Math.random() * pool.length)]);
+      }
+    }, SPIN_INTERVAL_MS);
+  }, [pool]);
 
-    window.setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * availableMenus.length);
-      const selectedMenu = availableMenus[randomIndex];
-
-      setPickedMenu(selectedMenu);
-      setRecentMenuIds((prevIds) => [selectedMenu.id, ...prevIds].slice(0, 3));
-      setMessage("오늘의 추천 메뉴는");
-      setIsPicking(false);
-    }, 700);
-  };
-
-  const addMenu = (newMenu: Menu) => {
-    setMenus((prevMenus) => [...prevMenus, newMenu]);
-  };
-
-  const deleteMenu = (id: number) => {
-    setMenus((prevMenus) => prevMenus.filter((menu) => menu.id !== id));
-    setRecentMenuIds((prevIds) => prevIds.filter((menuId) => menuId !== id));
-
-    if (pickedMenu?.id === id) {
-      setPickedMenu(null);
-      setMessage("추천 메뉴가 삭제됐어요. 다시 추천받아보세요.");
-    }
-  };
+  const toggleSpicy = useCallback(() => setExcludeSpicy((v) => !v), []);
+  const toggleLight = useCallback(() => setLightOnly((v) => !v), []);
 
   return {
-    filteredMenus,
-    selectedCategory,
-    pickedMenu,
-    isPicking,
-    message,
-    setSelectedCategory,
-    setMessage,
-    pickRandomMenu,
-    addMenu,
-    deleteMenu,
+    category,
+    setCategory,
+    excludeSpicy,
+    toggleSpicy,
+    lightOnly,
+    toggleLight,
+    current,
+    spinning,
+    roll,
+    poolSize: pool.length,
   };
 }

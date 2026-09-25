@@ -1,57 +1,53 @@
 import "./App.css";
-import RestaurantSearch from "./components/RestaurantSearch";
-
 import Hero from "./components/Hero";
-import RandomResult from "./components/RandomResult";
 import CategoryTabs from "./components/CategoryTabs";
-import MenuForm from "./components/MenuForm";
-import MenuList from "./components/MenuList";
-
+import RandomResult from "./components/RandomResult";
+import RestaurantSearch from "./components/RestaurantSearch";
+import { initialMenus } from "./data/initialMenus";
 import { useMenuPicker } from "./hooks/useMenuPicker";
 
-function App() {
+// 기존 MenuForm/MenuList로 사용자가 메뉴를 추가하고 있다면,
+// initialMenus 대신 [...initialMenus, ...userMenus] 형태로 합쳐서 useMenuPicker에 넘기면 됩니다.
+export default function App() {
   const {
-    filteredMenus,
-    selectedCategory,
-    pickedMenu,
-    isPicking,
-    message,
-    setSelectedCategory,
-    setMessage,
-    pickRandomMenu,
-    addMenu,
-    deleteMenu,
-  } = useMenuPicker();
+    category,
+    setCategory,
+    excludeSpicy,
+    toggleSpicy,
+    lightOnly,
+    toggleLight,
+    current,
+    spinning,
+    roll,
+    poolSize,
+  } = useMenuPicker(initialMenus);
+
+  const hasRolled = current !== null;
 
   return (
-    <main className="app">
+    <div className="app">
       <Hero />
 
-      <section className="picker">
-        <RandomResult
-          pickedMenu={pickedMenu}
-          isPicking={isPicking}
-          message={message}
-        />
+      <CategoryTabs
+        selected={category}
+        onSelect={setCategory}
+        excludeSpicy={excludeSpicy}
+        onToggleSpicy={toggleSpicy}
+        lightOnly={lightOnly}
+        onToggleLight={toggleLight}
+      />
 
-        <CategoryTabs
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+      <RandomResult
+        current={current}
+        spinning={spinning}
+        hasRolled={hasRolled}
+        poolSize={poolSize}
+        onRoll={roll}
+      />
 
-        <button type="button" className="pickButton" onClick={pickRandomMenu}>
-          점심 메뉴 추천받기
-        </button>
-      </section>
+      {hasRolled && !spinning && <RestaurantSearch menuName={current?.name ?? null} />}
 
-      <section className="contentGrid">
-        <MenuForm onAddMenu={addMenu} onShowMessage={setMessage} />
-
-        <MenuList menus={filteredMenus} onDeleteMenu={deleteMenu} />
-      </section>
-      <RestaurantSearch />
-    </main>
+      <footer>런치픽커 · 오늘의 메뉴 추천</footer>
+    </div>
   );
 }
-
-export default App;
