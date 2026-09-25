@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
-import type { Menu, Category } from "../types/menu";
-const categories: Category[] = ["한식", "중식", "일식", "양식", "분식", "건강식", "기타"];
+import { categories, type Menu, type MenuCategory } from "../types/menu";
 
 type MenuFormProps = {
   onAddMenu: (menu: Menu) => void;
@@ -9,7 +8,7 @@ type MenuFormProps = {
 
 function MenuForm({ onAddMenu, onShowMessage }: MenuFormProps) {
   const [menuName, setMenuName] = useState("");
-  const [menuCategory, setCategory] = useState<Category>("한식");
+  const [menuCategory, setMenuCategory] = useState<MenuCategory>("한식");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,16 +21,15 @@ function MenuForm({ onAddMenu, onShowMessage }: MenuFormProps) {
     }
 
     const newMenu: Menu = {
-      id: crypto.randomUUID(),
+      id: Date.now(),
       name: trimmedName,
       category: menuCategory,
-      kcal: 0, spicy: false, light: false, emoji: "🍽️", desc: "직접 추가한 메뉴 (영양 정보 미등록)",
     };
 
     onAddMenu(newMenu);
     onShowMessage(`${trimmedName} 메뉴를 추가했어요.`);
     setMenuName("");
-    setCategory("한식");
+    setMenuCategory("한식");
   };
 
   return (
@@ -52,11 +50,11 @@ function MenuForm({ onAddMenu, onShowMessage }: MenuFormProps) {
         <select
           value={menuCategory}
           onChange={(event) =>
-            setCategory(event.target.value as Category)
+            setMenuCategory(event.target.value as MenuCategory)
           }
         >
           {categories
-            
+            .filter((category) => category !== "전체")
             .map((category) => (
               <option key={category} value={category}>
                 {category}

@@ -43,8 +43,3 @@
 .restaurant-link:hover {
   text-decoration: underline;
 }
-.restaurant-search form { display: grid; gap: 10px; }
-.restaurant-search label { font-size: 13px; color: var(--ink-soft); text-align: left; }
-.restaurant-area { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; }
-.restaurant-area:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
-.restaurant-search button:disabled { opacity: .55; cursor: not-allowed; }

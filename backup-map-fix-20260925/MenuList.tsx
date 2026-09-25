@@ -2,7 +2,7 @@ import type { Menu } from "../types/menu";
 
 type MenuListProps = {
   menus: Menu[];
-  onDeleteMenu: (id: string) => void;
+  onDeleteMenu: (id: number) => void;
 };
 
 function MenuList({ menus, onDeleteMenu }: MenuListProps) {
