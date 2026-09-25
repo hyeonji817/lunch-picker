@@ -48,6 +48,3 @@
 .restaurant-area { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; }
 .restaurant-area:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
 .restaurant-search button:disabled { opacity: .55; cursor: not-allowed; }
-.kakao-map-panel { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--card); }
-.kakao-map { width: 100%; height: 320px; }
-.kakao-map-panel .empty-note { padding: 12px; }

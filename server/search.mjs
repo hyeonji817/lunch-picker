@@ -1,40 +1,31 @@
-export async function searchRestaurants(params, { clientId, clientSecret, fetcher = fetch } = {}) {
+export async function searchRestaurants(params, { apiKey, fetcher = fetch } = {}) {
   const menu = (params.get('menu') || '').trim();
   const area = (params.get('area') || '').trim();
-  if (!menu || !area || menu.length > 80 || area.length > 100) {
-    return { status: 400, body: { error: '지역과 메뉴를 올바르게 입력해주세요.' } };
-  }
-  if (!clientId || !clientSecret) {
-    return { status: 503, body: { error: '서버의 .env에 NAVER_CLIENT_ID와 NAVER_CLIENT_SECRET을 설정해주세요.' } };
-  }
+  const fail = (status, error) => ({ status, body: { error } });
+  if (!menu || !area || menu.length > 80 || area.length > 100) return fail(400, '지역과 메뉴를 입력해주세요.');
+  if (!apiKey || apiKey === 'your_rest_api_key') return fail(503, '서버의 KAKAO_REST_API_KEY 설정이 필요합니다. .env 저장 후 API 서버를 재시작해주세요.');
   const query = `${area} ${menu}`;
-  const searchParams = new URLSearchParams({ query, display: '5', start: '1', sort: 'random', format: 'json' });
+  const searchParams = new URLSearchParams({ query, category_group_code: 'FD6', size: '15' });
   try {
-    const response = await fetcher(`https://naverapihub.apigw.ntruss.com/search/v1/local?${searchParams}`, {
-      headers: { 'X-NCP-APIGW-API-KEY-ID': clientId, 'X-NCP-APIGW-API-KEY': clientSecret },
-      signal: AbortSignal.timeout(8000),
+    const response = await fetcher(`https://dapi.kakao.com/v2/local/search/keyword.json?${searchParams}`, {
+      headers: { Authorization: `KakaoAK ${apiKey}` }, signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) {
-      return { status: response.status === 429 ? 429 : 502, body: { error: response.status === 429
-        ? '검색 요청이 너무 많거나 이용 한도에 도달했습니다. 잠시 후 다시 시도하거나 콘솔의 한도를 확인해주세요.'
-        : '네이버 검색에 실패했습니다. 서버 인증 정보와 검색 API 설정을 확인해주세요.' } };
+      if (response.status === 401 || response.status === 403) return fail(502, '카카오 인증에 실패했어요. REST API 키와 카카오맵 사용 설정을 확인해주세요.');
+      if (response.status === 429) return fail(429, '카카오 API 사용 한도에 도달했어요. 잠시 후 다시 시도해주세요.');
+      return fail(502, '카카오 검색 서버가 응답하지 않아요. 잠시 후 다시 시도해주세요.');
     }
     const data = await response.json();
-    if (!Array.isArray(data.items)) throw new Error('Invalid response');
-    const places = data.items.slice(0, 5).map((item, index) => {
-      const name = String(item.title || '').replace(/<[^>]*>/g, '');
-      const address = String(item.roadAddress || item.address || '');
-      return {
-        id: `${index}-${name}-${address}`, name, address, category: String(item.category || ''),
-        mapUrl: `https://map.naver.com/p/search/${encodeURIComponent(`${address} ${name}`)}`,
-      };
-    });
+    if (!Array.isArray(data.documents)) return fail(502, '카카오 검색 응답 형식이 올바르지 않습니다.');
+    const places = data.documents.map(p => ({
+      id: String(p.id), name: p.place_name, category: p.category_name,
+      address: p.road_address_name || p.address_name, phone: p.phone,
+      lat: Number(p.y), lng: Number(p.x),
+      mapUrl: `https://place.map.kakao.com/${encodeURIComponent(p.id)}`,
+    }));
     return { status: 200, body: { query, places } };
   } catch (error) {
-    const timedOut = error instanceof Error && error.name === 'TimeoutError';
-    return { status: timedOut ? 504 : 502, body: { error: timedOut
-      ? '검색 응답이 지연되고 있습니다. 다시 시도해주세요.'
-      : '검색 서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.' } };
+    return fail(error.name === 'TimeoutError' ? 504 : 502, error.name === 'TimeoutError'
+      ? '검색 시간이 초과됐어요. 다시 시도해주세요.' : '카카오 검색에 연결하지 못했어요. 서버 네트워크를 확인해주세요.');
   }
 }
-

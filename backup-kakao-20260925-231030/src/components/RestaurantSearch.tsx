@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import "./RestaurantSearch.css";
-import KakaoMap from "./KakaoMap";
-interface Place { id: string; name: string; category: string; address: string; mapUrl: string; lat: number; lng: number; phone: string }
+interface Place { id: string; name: string; category: string; address: string; mapUrl: string }
 export default function RestaurantSearch({ menuName }: { menuName: string | null }) {
   const [area, setArea] = useState("");
   const [places, setPlaces] = useState<Place[] | null>(null);
@@ -53,16 +52,13 @@ export default function RestaurantSearch({ menuName }: { menuName: string | null
       </button>
     </form>
     {error && <p className="empty-note" role="alert">{error}</p>}
-    <div role="status">{places && <p className="empty-note">{places.length ? `카카오 검색 결과 ${places.length}곳` : '검색 결과가 없어요. 다른 동네 이름으로 검색해보세요.'}</p>}</div>
-    {places && places.length > 0 && <KakaoMap places={places}/>}
+    <div role="status">{places && <p className="empty-note">{places.length ? `네이버 검색 결과 ${places.length}곳` : '검색 결과가 없어요. 다른 동네 이름으로 검색해보세요.'}</p>}</div>
     {places && places.length > 0 && <ul className="restaurant-list">{places.map(place => <li key={place.id} className="restaurant-item">
       <div className="restaurant-name">{place.name}</div>
       <div className="restaurant-category">{place.category}</div>
       <div className="restaurant-address">{place.address}</div>
-      {place.phone && <div className="restaurant-address">{place.phone}</div>}
-      <a className="restaurant-link" href={place.mapUrl} target="_blank" rel="noreferrer">카카오 지도에서 보기 →</a>
+      <a className="restaurant-link" href={place.mapUrl} target="_blank" rel="noreferrer">네이버 지도에서 보기 →</a>
     </li>)}</ul>}
-    <a className="restaurant-link" href={`https://map.kakao.com/link/search/${encodeURIComponent(`${area.trim()} ${menuName}`.trim())}`} target="_blank" rel="noreferrer">카카오 지도에서 직접 검색 →</a>
+    <a className="restaurant-link" href={`https://map.naver.com/p/search/${encodeURIComponent(`${area.trim()} ${menuName}`.trim())}`} target="_blank" rel="noreferrer">네이버 지도에서 직접 검색 →</a>
   </section>;
 }
-
