@@ -1,6 +1,7 @@
 import type { Menu } from "../types/menu";
 
 interface Props {
+  kind: "meal" | "dessert";
   current: Menu | null;
   spinning: boolean;
   hasRolled: boolean;
@@ -8,7 +9,7 @@ interface Props {
   onRoll: () => void;
 }
 
-export default function RandomResult({ current, spinning, hasRolled, poolSize, onRoll }: Props) {
+export default function RandomResult({ kind, current, spinning, hasRolled, poolSize, onRoll }: Props) {
   if (poolSize === 0) {
     return (
       <div className="stage">
@@ -31,16 +32,16 @@ export default function RandomResult({ current, spinning, hasRolled, poolSize, o
             <div className="result-desc">{current.desc}</div>
             <div className="tags">
               <span className="tag">{current.kcal}kcal</span>
-              <span className={`tag${current.spicy ? " spicy" : ""}`}>
+              {kind === "meal" && <span className={`tag${current.spicy ? " spicy" : ""}`}>
                 {current.spicy ? "🌶️ 매콤" : "😌 안 매움"}
-              </span>
+              </span>}
               <span className="tag">{current.category}</span>
             </div>
           </>
         ) : (
           <>
-            <div className="emoji-wrap">🍚</div>
-            <p className="hint">아래 버튼을 눌러 오늘의 점심을 뽑아보세요</p>
+            <div className="emoji-wrap">{kind === "meal" ? "🍚" : "🍰"}</div>
+            <p className="hint">아래 버튼을 눌러 오늘의 {kind === "meal" ? "식사" : "디저트"}를 뽑아보세요</p>
           </>
         )}
       </div>
@@ -51,7 +52,7 @@ export default function RandomResult({ current, spinning, hasRolled, poolSize, o
         onClick={onRoll}
         disabled={spinning}
       >
-        {hasRolled ? "처음부터 다시 뽑기" : "오늘의 점심 뽑기!"}
+        {hasRolled ? "처음부터 다시 뽑기" : `오늘의 ${kind === "meal" ? "식사" : "디저트"} 뽑기!`}
       </button>
     </>
   );

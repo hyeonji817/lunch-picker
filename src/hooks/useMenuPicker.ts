@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useEffect, useCallback, useMemo, useRef, useState } from "react";
 import type { Category, Menu } from "../types/menu";
 
 const SPIN_TICKS = 14;
@@ -24,6 +24,13 @@ export function useMenuPicker(menus: Menu[]) {
       ),
     [menus, category, excludeSpicy, lightOnly]
   );
+
+  useEffect(() => {
+    if (timerRef.current !== null) window.clearInterval(timerRef.current);
+    setSpinning(false);
+    setCurrent(null);
+    return () => { if (timerRef.current !== null) window.clearInterval(timerRef.current); };
+  }, [pool]);
 
   const roll = useCallback(() => {
     if (pool.length === 0) {

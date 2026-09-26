@@ -2,10 +2,16 @@ export async function searchRestaurants(params, { apiKey, fetcher = fetch } = {}
   const menu = (params.get('menu') || '').trim();
   const area = (params.get('area') || '').trim();
   const fail = (status, error) => ({ status, body: { error } });
+
   if (!menu || !area || menu.length > 80 || area.length > 100) return fail(400, '지역과 메뉴를 입력해주세요.');
   if (!apiKey || apiKey === 'your_rest_api_key') return fail(503, '서버의 KAKAO_REST_API_KEY 설정이 필요합니다. .env 저장 후 API 서버를 재시작해주세요.');
+
   const query = `${area} ${menu}`;
-  const searchParams = new URLSearchParams({ query, category_group_code: 'FD6', size: '15' });
+  const searchParams = new URLSearchParams({ query, size: '15' });
+
+  // 디저트는 카페와 제과점도 검색할 수 있도록 음식점 제한을 적용하지 않습니다.
+  if (params.get('kind') !== 'dessert') searchParams.set('category_group_code', 'FD6');
+
   try {
     const response = await fetcher(`https://dapi.kakao.com/v2/local/search/keyword.json?${searchParams}`, {
       headers: { Authorization: `KakaoAK ${apiKey}` }, signal: AbortSignal.timeout(8000),
@@ -28,4 +34,5 @@ export async function searchRestaurants(params, { apiKey, fetcher = fetch } = {}
     return fail(error.name === 'TimeoutError' ? 504 : 502, error.name === 'TimeoutError'
       ? '검색 시간이 초과됐어요. 다시 시도해주세요.' : '카카오 검색에 연결하지 못했어요. 서버 네트워크를 확인해주세요.');
   }
+  
 }

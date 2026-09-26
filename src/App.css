@@ -198,3 +198,10 @@ footer {
   margin-top: 26px;
   opacity: 0.7;
 }
+
+#root { width: 100%; max-width: 430px; }
+.sheet-tabs { display: flex; gap: 6px; padding: 5px; margin-bottom: 24px; background: #ebdcc4; border-radius: 16px; }
+.sheet-tabs button { flex: 1; padding: 14px 12px; border: 0; border-radius: 12px; background: transparent; color: var(--ink-soft); font: inherit; font-weight: 600; cursor: pointer; }
+.sheet-tabs button[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 2px 8px #4a322214; }
+button:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+.filters { margin-bottom: 16px; }
