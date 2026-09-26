@@ -1,7 +1,7 @@
 import type { Menu } from "../types/menu";
 
 interface Props {
-  kind: "meal" | "dessert";
+  kind: "meal" | "dessert" | "restaurant";
   current: Menu | null;
   spinning: boolean;
   hasRolled: boolean;
@@ -10,11 +10,12 @@ interface Props {
 }
 
 export default function RandomResult({ kind, current, spinning, hasRolled, poolSize, onRoll }: Props) {
+  const label = kind === "restaurant" ? "레스토랑" : kind === "meal" ? "식사" : "디저트";
   if (poolSize === 0) {
     return (
       <div className="stage">
         <p className="empty-note">
-          조건에 맞는 메뉴가 없어요.
+          조건에 맞는 {kind === "restaurant" ? "레스토랑 유형이" : "메뉴가"} 없어요.
           <br />
           필터를 조금 풀어볼까요?
         </p>
@@ -31,7 +32,7 @@ export default function RandomResult({ kind, current, spinning, hasRolled, poolS
             <div className="result-name">{current.name}</div>
             <div className="result-desc">{current.desc}</div>
             <div className="tags">
-              <span className="tag">{current.kcal}kcal</span>
+              {kind !== "restaurant" && <span className="tag">{current.kcal}kcal</span>}
               {kind === "meal" && <span className={`tag${current.spicy ? " spicy" : ""}`}>
                 {current.spicy ? "🌶️ 매콤" : "😌 안 매움"}
               </span>}
@@ -40,8 +41,8 @@ export default function RandomResult({ kind, current, spinning, hasRolled, poolS
           </>
         ) : (
           <>
-            <div className="emoji-wrap">{kind === "meal" ? "🍚" : "🍰"}</div>
-            <p className="hint">아래 버튼을 눌러 오늘의 {kind === "meal" ? "식사" : "디저트"}를 뽑아보세요</p>
+            <div className="emoji-wrap">{kind === "restaurant" ? "🍽️" : kind === "meal" ? "🍚" : "🍰"}</div>
+            <p className="hint">아래 버튼을 눌러 오늘의 {label} 추천을 받아보세요</p>
           </>
         )}
       </div>
@@ -52,7 +53,7 @@ export default function RandomResult({ kind, current, spinning, hasRolled, poolS
         onClick={onRoll}
         disabled={spinning}
       >
-        {hasRolled ? "처음부터 다시 뽑기" : `오늘의 ${kind === "meal" ? "식사" : "디저트"} 뽑기!`}
+        {hasRolled ? "처음부터 다시 뽑기" : `오늘의 ${label} 뽑기!`}
       </button>
     </>
   );

@@ -22,7 +22,12 @@ test('Kakao authorization, restaurant filter, coordinates and safe links',async(
 test('empty results',async()=>assert.deepEqual((await searchRestaurants(params(),{apiKey:'key',fetcher:mock({documents:[]})})).body.places,[]));
 
 test('authentication and quota errors do not expose upstream secrets',async()=>{
- for(const status of [401,403,429,500]) { const r=await searchRestaurants(params(),{apiKey:'key',fetcher:mock({error:'secret'},status)});assert.equal(r.status,status===429?429:502);assert.ok(!r.body.error.includes('secret')); }
+ for(const status of [401,403,429,500]) { 
+  const r=await searchRestaurants(params(),{
+    apiKey:'key',fetcher:mock({
+      error:'secret'},status)
+    });
+    assert.equal(r.status,status===429?429:502);assert.ok(!r.body.error.includes('secret')); }
 });
 
 test('timeout and invalid response',async()=>{
@@ -31,7 +36,8 @@ test('timeout and invalid response',async()=>{
 });
 
 test('HTTP route and frontend response contract',async(t)=>{
- const app=createApp({apiKey:'key',fetcher:mock({documents:[]})});await new Promise(resolve=>app.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>app.close(resolve)));
+ const app=createApp({apiKey:'key',fetcher:mock({documents:[]})});
+ await new Promise(resolve=>app.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>app.close(resolve)));
  const base=`http://127.0.0.1:${app.address().port}`;
  const response=await fetch(`${base}/api/restaurants?${params()}`);assert.equal(response.status,200);assert.deepEqual((await response.json()).places,[]);
  assert.equal((await fetch(`${base}/api/search`)).status,404);

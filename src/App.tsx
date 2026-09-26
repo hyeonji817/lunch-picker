@@ -2,6 +2,7 @@ import "./App.css";
 import { useState } from "react";
 import type { PickerKind } from "./types/menu";
 import { dessertMenus } from "./data/dessertMenus";
+import RestaurantPicker from "./components/RestaurantPicker";
 import Hero from "./components/Hero";
 import CategoryTabs from "./components/CategoryTabs";
 import RandomResult from "./components/RandomResult";
@@ -41,6 +42,7 @@ function PickerPage({ kind }: { kind: PickerKind }) {
         onToggleLight={toggleLight}
       />
 
+      {kind === "meal" && category === "레스토랑" ? <RestaurantPicker /> : <>
       <RandomResult
         kind={kind}
         current={current}
@@ -51,6 +53,7 @@ function PickerPage({ kind }: { kind: PickerKind }) {
       />
 
       {hasRolled && !spinning && <RestaurantSearch kind={kind} menuName={current?.name ?? null} />}
+      </>}
 
       
     </>

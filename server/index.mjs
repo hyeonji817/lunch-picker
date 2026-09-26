@@ -23,7 +23,9 @@ export function createApp({ apiKey = process.env.KAKAO_REST_API_KEY, fetcher = f
       if (++limit.count > 30) { res.writeHead(429).end(JSON.stringify({error:'검색 요청이 많아요. 잠시 후 다시 시도해주세요.'})); return; }
       const result = await searchRestaurants(url.searchParams, { apiKey, fetcher });
       res.writeHead(result.status).end(JSON.stringify(result.body));
-    } catch { res.writeHead(500).end(JSON.stringify({ error: '검색 서버에서 오류가 발생했습니다.' })); }
+    } catch { 
+      res.writeHead(500).end(JSON.stringify({ error: '검색 서버에서 오류가 발생했습니다.' })); 
+    }
   });
 }
 

@@ -1,6 +1,6 @@
 import type { CategoryFilter } from "../hooks/useMenuPicker";
 
-const CATEGORIES: CategoryFilter[] = ["전체", "한식", "중식", "일식", "양식", "분식", "건강식", "기타"];
+const CATEGORIES: CategoryFilter[] = ["전체", "한식", "중식", "일식", "양식", "분식", "건강식", "기타", "레스토랑"];
 
 interface Props {
   kind: "meal" | "dessert";
@@ -24,9 +24,9 @@ export default function CategoryTabs({
   return (
     <>
       <div className="filters">
-        {(kind === "meal" ? CATEGORIES : ["전체", "케이크", "베이커리", "아이스크림", "빙수", "쿠키&마카롱", "음료"] as CategoryFilter[]).map((c) => (
+        {(kind === "meal" ? CATEGORIES : ["전체", "케이크", "베이커리", "아이스크림", "빙수", "쿠키·마카롱", "음료"] as CategoryFilter[]).map((c) => (
           <button
-            key={c}
+            key={c === "쿠키·마카롱" ? "쿠키&마카롱" : c}
             type="button"
             className={`chip${c === selected ? " active" : ""}`}
             aria-pressed={c === selected}
@@ -36,7 +36,7 @@ export default function CategoryTabs({
           </button>
         ))}
       </div>
-      {kind === "meal" && <div className="filters filters--mood">
+      {kind === "meal" && selected !== "레스토랑" && <div className="filters filters--mood">
         <button
           type="button"
           className={`chip${excludeSpicy ? " active" : ""}`}
