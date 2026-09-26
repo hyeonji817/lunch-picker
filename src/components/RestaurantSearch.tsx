@@ -42,7 +42,7 @@ export default function RestaurantSearch({ menuName, kind }: { menuName: string 
 
     try {
       const params = new URLSearchParams({ area: area.trim(), menu: menuName, kind });
-      const response = await fetch(`/api/restaurants?${params}`, {
+      const response = await fetch(`${(import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "")}/api/restaurants?${params}`, {
         signal: AbortSignal.any([abort.signal, AbortSignal.timeout(12000)]),
       });
 

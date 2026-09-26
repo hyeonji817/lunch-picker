@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">lunch-picker</string>
+    <string name="title_activity_main">lunch-picker</string>
+    <string name="package_name">com.lunchpicker.app</string>
+    <string name="custom_url_scheme">com.lunchpicker.app</string>
+</resources>
