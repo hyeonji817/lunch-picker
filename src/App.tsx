@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { PickerKind } from "./types/menu";
 import { dessertMenus } from "./data/dessertMenus";
 import RestaurantPicker from "./components/RestaurantPicker";
+import PickerLayout from "./components/PickerLayout";
 import Hero from "./components/Hero";
 import CategoryTabs from "./components/CategoryTabs";
 import RandomResult from "./components/RandomResult";
@@ -27,11 +28,7 @@ function PickerPage({ kind }: { kind: PickerKind }) {
   } = useMenuPicker(kind === "meal" ? initialMenus : dessertMenus);
 
   const hasRolled = current !== null;
-
-  return (
-    <>
-      <Hero kind={kind} />
-
+  const controls = (
       <CategoryTabs
         kind={kind}
         selected={category}
@@ -41,8 +38,16 @@ function PickerPage({ kind }: { kind: PickerKind }) {
         lightOnly={lightOnly}
         onToggleLight={toggleLight}
       />
+  );
 
-      {kind === "meal" && category === "레스토랑" ? <RestaurantPicker /> : <>
+  return (
+    <>
+      <Hero kind={kind} />
+
+
+
+      {kind === "meal" && category === "레스토랑" ? <RestaurantPicker controls={controls} /> : <PickerLayout controls={controls}
+        search={hasRolled && !spinning && <RestaurantSearch kind={kind} menuName={current?.name ?? null} />}>
       <RandomResult
         kind={kind}
         current={current}
@@ -52,8 +57,7 @@ function PickerPage({ kind }: { kind: PickerKind }) {
         onRoll={roll}
       />
 
-      {hasRolled && !spinning && <RestaurantSearch kind={kind} menuName={current?.name ?? null} />}
-      </>}
+      </PickerLayout>}
 
       
     </>

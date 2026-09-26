@@ -29,7 +29,8 @@ body {
 
 .app {
   width: 100%;
-  max-width: 430px;
+  max-width: 1000px;
+  margin-inline: auto;
   padding: 28px 20px 40px;
 }
 
@@ -199,7 +200,7 @@ footer {
   opacity: 0.7;
 }
 
-#root { width: 100%; max-width: 430px; }
+#root { width: 100%; min-width: 0; }
 .sheet-tabs { display: flex; gap: 6px; padding: 5px; margin-bottom: 24px; background: #ebdcc4; border-radius: 16px; }
 .sheet-tabs button { flex: 1; padding: 14px 12px; border: 0; border-radius: 12px; background: transparent; color: var(--ink-soft); font: inherit; font-weight: 600; cursor: pointer; }
 .sheet-tabs button[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 2px 8px #4a322214; }
@@ -218,3 +219,25 @@ button:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
 .restaurant-options .filters { margin-bottom: 10px; }
 .restaurant-options-label { margin: 14px 0 10px; font-size: 13px; color: var(--ink); }
 .restaurant-options-note { margin: 8px 0 0; font-size: 12px; line-height: 1.6; color: var(--ink-soft); }
+
+/* Mobile first: keep text readable and let the layout reflow. */
+.picker-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+.picker-controls, .picker-result, .picker-search { min-width: 0; }
+.picker-controls > :last-child { margin-bottom: 0; }
+.chip { min-height: 44px; }
+.restaurant-area { font-size: 16px; }
+.picker-search { overflow-wrap: anywhere; }
+
+@media (max-width: 759px) {
+  .app { max-width: 600px; padding: 24px 16px 32px; }
+}
+
+@media (min-width: 760px) {
+  .app { padding: 40px 32px 48px; }
+  .sheet-tabs { max-width: 430px; margin-inline: auto; margin-bottom: 32px; }
+  .hero { margin-bottom: 28px; }
+  .picker-layout { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 28px; align-items: start; }
+  .picker-controls { padding: 20px; background: #ffffff66; border: 1px solid var(--line); border-radius: 20px; }
+  .picker-result .stage { min-height: 320px; }
+  .picker-search { grid-column: 1 / -1; }
+}
